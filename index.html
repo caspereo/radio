@@ -26,7 +26,7 @@
 
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
         }
 
         .section-title {
@@ -51,27 +51,28 @@
         /* STATION BUTTONS */
         .btn {
             position: relative;
-            /* Toned down state som standard */
             background: rgba(var(--brand-color), 0.1);
             border: 1px solid rgba(var(--brand-color), 0.2);
             border-radius: 20px;
-            padding: 20px 5px;
+            padding: 22px 5px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-decoration: none;
             color: var(--text-dim);
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
+            overflow: hidden; /* Vigtigt for glas-reflektion */
             -webkit-tap-highlight-color: transparent;
         }
 
         .btn .icon {
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 8px;
             opacity: 0.7;
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
+            z-index: 2;
         }
 
         .btn span {
@@ -82,15 +83,46 @@
             overflow: hidden;
             text-overflow: ellipsis;
             width: 90%;
+            z-index: 2;
+        }
+
+        /* HOVER EFFEKT */
+        .btn:hover {
+            transform: translateY(-5px) scale(1.04);
+            background: rgba(var(--brand-color), 0.15);
+            border-color: rgba(var(--brand-color), 0.4);
+            color: #fff;
+        }
+
+        /* GLAS REFLEKTION (Shimmer) */
+        .btn::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.6s;
+            z-index: 1;
+        }
+
+        .btn:hover::after {
+            left: 150%;
         }
 
         /* ACTIVE / PLAYING STATE */
         .btn.playing {
-            background: rgba(var(--brand-color), 0.25);
-            border-color: rgba(var(--brand-color), 0.8);
+            background: rgba(var(--brand-color), 0.3);
+            border-color: rgba(var(--brand-color), 0.9);
             color: #fff;
-            box-shadow: 0 0 20px rgba(var(--brand-color), 0.3);
-            transform: scale(1.03);
+            box-shadow: 0 10px 25px rgba(var(--brand-color), 0.3);
+            transform: scale(1.04);
         }
 
         .btn.playing .icon {
@@ -98,18 +130,18 @@
             transform: scale(1.2);
         }
 
-        /* UNIKKE BRAND FARVER (RGB format) */
-        .nova { --brand-color: 46, 204, 113; }      /* Grøn */
-        .r100 { --brand-color: 52, 152, 219; }      /* Blå */
-        .soft { --brand-color: 41, 128, 185; }      /* Mørkeblå */
-        .soft-l { --brand-color: 135, 206, 250; }    /* Lyseblå */
-        .voice { --brand-color: 230, 230, 230; }    /* Hvidlig */
-        .pop { --brand-color: 155, 89, 182; }       /* Lilla */
-        .mix { --brand-color: 233, 30, 99; }        /* Pink */
-        .dr { --brand-color: 231, 76, 60; }         /* Rød */
-        .vinyl { --brand-color: 243, 156, 18; }     /* Orange */
-        .retro { --brand-color: 211, 84, 0; }        /* Mørk orange */
-        .party { --brand-color: 241, 196, 15; }     /* Gul */
+        /* BRAND FARVER */
+        .nova { --brand-color: 46, 204, 113; }
+        .r100 { --brand-color: 52, 152, 219; }
+        .soft { --brand-color: 41, 128, 185; }
+        .soft-l { --brand-color: 135, 206, 250; }
+        .voice { --brand-color: 230, 230, 230; }
+        .pop { --brand-color: 155, 89, 182; }
+        .mix { --brand-color: 233, 30, 99; }
+        .dr { --brand-color: 231, 76, 60; }
+        .vinyl { --brand-color: 243, 156, 18; }
+        .retro { --brand-color: 211, 84, 0; }
+        .party { --brand-color: 241, 196, 15; }
 
         /* FOOTER PLAYER */
         .footer-player {
@@ -119,16 +151,16 @@
             transform: translateX(-50%);
             width: calc(100% - 40px);
             max-width: 450px;
-            background: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(15, 15, 15, 0.96);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 15px 25px;
+            border-radius: 28px;
+            padding: 16px 26px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             z-index: 1000;
         }
 
@@ -137,17 +169,17 @@
         #current-label {
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             color: rgba(var(--active-brand, 255, 255, 255), 1);
             font-weight: 800;
-            margin-bottom: 2px;
+            transition: color 0.4s ease;
         }
 
-        #current-name { font-size: 17px; font-weight: 700; }
+        #current-name { font-size: 17px; font-weight: 700; margin-top: 2px; }
 
         .play-btn {
-            width: 50px;
-            height: 50px;
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             background: #fff;
             border: none;
@@ -155,9 +187,10 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            flex-shrink: 0;
+            transition: transform 0.2s;
         }
 
+        .play-btn:active { transform: scale(0.9); }
         .play-btn svg { fill: #000; width: 24px; height: 24px; }
 
         video { display: none; }
@@ -196,8 +229,8 @@
     <div class="grid">
         <div onclick="play('https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac', 'Weekend Mix', this)" class="btn mix"><span class="icon">🍹</span><span>Weekend Mix</span></div>
         <div onclick="play('https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac', 'In The Mix', this)" class="btn voice"><span class="icon">🔥</span><span>In The Mix</span></div>
-        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac', 'Nova Throwback', this)" class="btn nova"><span class="icon">⏪</span><span>Nova Throwback</span></div>
-        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac', 'Nova 100% Dansk', this)" class="btn nova"><span class="icon">🇩🇰</span><span>Nova Dansk</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac', 'Nova Throwback', this)" class="btn nova"><span class="icon">⏪</span><span>N. Throwback</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac', 'Nova 100% Dansk', this)" class="btn nova"><span class="icon">🇩🇰</span><span>Nova 100% Dansk</span></div>
         <div onclick="play('http://stream1.partyfm.dk/Party128', 'PartyFM', this)" class="btn party"><span class="icon">🥳</span><span>PartyFM</span></div>
         <div onclick="play('https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac', 'Top 100', this)" class="btn vinyl"><span class="icon">🏆</span><span>Top 100</span></div>
         <div onclick="play('https://live-bauerdk.sharp-stream.com/RP09_premium_96.aac', 'Radio Soft Modern', this)" class="btn soft-l"><span class="icon">🌿</span><span>Soft Modern</span></div>
@@ -208,7 +241,7 @@
 <div class="footer-player">
     <div class="info-stack">
         <div id="current-label">Vælg station</div>
-        <div id="current-name">Klar til afspilning</div>
+        <div id="current-name">Radio Danmark Pro</div>
     </div>
     <button class="play-btn" onclick="togglePlay()">
         <svg id="ctrl-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -224,12 +257,9 @@
     const statusLabel = document.getElementById('current-label');
 
     function play(url, name, el) {
-        // Reset alle knapper
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
-        // Aktiver valgt knap
         el.classList.add('playing');
         
-        // Hent RGB farven fra knappen og send til footer
         const color = getComputedStyle(el).getPropertyValue('--brand-color');
         document.documentElement.style.setProperty('--active-brand', color);
 
@@ -239,7 +269,7 @@
         
         engine.src = url;
         engine.load();
-        engine.play();
+        engine.play().catch(e => console.log("Klik kræves for start"));
         updateIcon(true);
 
         if ('mediaSession' in navigator) {
