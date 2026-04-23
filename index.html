@@ -3,185 +3,342 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Radio Player</title>
+    <title>Radio Danmark | Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background: #0f0f0f; 
-            color: white; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 10px 20px; 
+        :root {
+            --bg-color: #08080a;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent: #f39c12;
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --glass: rgba(15, 15, 15, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(243, 156, 18, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 40%);
+            color: var(--text-main);
             margin: 0;
-            /* Sikrer masser af plads i bunden så knapperne ikke dækkes */
-            padding-bottom: 220px; 
-        }
-        
-        .section-title {
-            width: 100%;
-            max-width: 400px;
-            font-size: 13px;
-            color: #888;
-            margin: 25px 0 12px 5px;
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            border-left: 4px solid #f39c12;
-            padding-left: 12px;
-        }
-
-        .section-title:first-of-type {
-            margin-top: 20px;
-        }
-
-        .grid { 
-            display: grid; 
-            grid-template-columns: 1fr; 
-            gap: 12px; 
-            width: 100%; 
-            max-width: 400px; 
-        }
-        
-        .btn { 
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 22px; 
-            border-radius: 16px; 
-            text-decoration: none; 
-            color: white; 
-            font-weight: 600; 
-            font-size: 17px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: all 0.2s ease;
-            -webkit-tap-highlight-color: transparent;
-            border: 1px solid rgba(255,255,255,0.05);
-            cursor: pointer;
-        }
-        
-        .btn:active { transform: scale(0.96); filter: brightness(1.2); }
-
-        /* Farve-profiler */
-        .dr { background: linear-gradient(135deg, #e71414, #9e0a0a); }
-        .nova { background: linear-gradient(135deg, #2ecc71, #27ae60); }
-        .radio100 { background: linear-gradient(135deg, #3498db, #2980b9); }
-        .the-voice { background: #ffffff; color: #000; }
-        .soft { background: linear-gradient(135deg, #00adef, #005d82); }
-        .popfm { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
-        .retro-style { background: linear-gradient(135deg, #e67e22, #d35400); }
-        .mix-style { background: linear-gradient(135deg, #662d91, #441e62); }
-        .classic-style { background: linear-gradient(135deg, #5b7d87, #354a50); }
-        .gold-style { background: linear-gradient(135deg, #f1c40f, #f39c12); color: #000; }
-
-        /* FORBEDRET FOOTER-PLAYER */
-        .footer-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            /* Semi-gennemsigtig baggrund med blur */
-            background: rgba(24, 24, 24, 0.95);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            
-            padding: 20px 0 calc(20px + env(safe-area-inset-bottom));
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+            padding: 20px 20px 180px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            z-index: 9999;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        #current-label {
-            font-size: 15px;
-            margin-bottom: 15px;
-            color: #f39c12;
-            font-weight: 800;
+        /* Overskrifter */
+        .section-title {
+            width: 100%;
+            max-width: 1000px;
+            font-size: 11px;
+            color: var(--accent);
+            margin: 40px 0 20px 0;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* Større video/afspiller-bjælke */
-        video {
-            width: 92%;
-            max-width: 420px;
-            height: 56px; /* Øget højde */
-            background: #000;
-            border-radius: 14px;
-            outline: none;
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex-grow: 1;
+            background: linear-gradient(to right, rgba(243, 156, 18, 0.3), transparent);
+        }
+
+        /* Grid System */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Station Cards */
+        .station-card {
+            position: relative;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 25px 15px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .station-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+
+        .station-card:active {
+            transform: scale(0.95);
+        }
+
+        /* Ikon/Emoji styling */
+        .icon {
+            font-size: 28px;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        .station-name {
+            font-weight: 600;
+            font-size: 15px;
+            letter-spacing: -0.2px;
+        }
+
+        /* Specifikke farve-glows ved hover og active */
+        .station-card.playing {
+            border-color: var(--accent);
+            background: rgba(243, 156, 18, 0.1);
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.15);
+        }
+
+        .playing::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.2); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        /* Footer Player */
+        .footer-player {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            z-index: 10000;
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .now-playing-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        #current-station-name {
+            font-size: 16px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #play-pause-btn {
+            background: var(--accent);
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        #play-pause-btn:active { transform: scale(0.9); }
+
+        /* Skjult video tag */
+        video { display: none; }
+
+        /* Mobile optimering */
+        @media (max-width: 480px) {
+            .grid { grid-template-columns: 1fr 1fr; }
+            .section-title { margin-top: 30px; }
+            .footer-player { bottom: 20px; width: 85%; }
         }
     </style>
 </head>
 <body>
 
-    <div class="section-title">Populære Stationer</div>
+    <div class="section-title">Populære</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/nova-premium_96.aac" onclick="return startRadio(event, this.href, 'Nova')" class="btn nova"><span>Nova</span> ✨</a>
-        <a href="https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac" onclick="return startRadio(event, this.href, 'Radio 100')" class="btn radio100"><span>Radio 100</span> 💯</a>
-        <a href="https://live-bauerdk.sharp-stream.com/soft-premium_96.aac" onclick="return startRadio(event, this.href, 'Radio Soft')" class="btn soft"><span>Radio Soft</span> ☁️</a>
-        <a href="https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac" onclick="return startRadio(event, this.href, 'The Voice')" class="btn the-voice"><span>The Voice</span> 🎤</a>
-        <a href="https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac" onclick="return startRadio(event, this.href, 'PopFM')" class="btn popfm"><span>PopFM</span> 🎸</a>
-        <a href="https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac" onclick="return startRadio(event, this.href, 'Mix 7')" class="btn mix-style"><span>Mix 7</span> 🕺</a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="return startRadio(event, this.href, 'DR P4')" class="btn dr"><span>DR P4</span> 📍</a>
+        <a href="https://live-bauerdk.sharp-stream.com/nova-premium_96.aac" onclick="return playRadio(this, 'Nova')" class="station-card">
+            <span class="icon">✨</span>
+            <span class="station-name">Nova</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac" onclick="return playRadio(this, 'Radio 100')" class="station-card">
+            <span class="icon">💯</span>
+            <span class="station-name">Radio 100</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/soft-premium_96.aac" onclick="return playRadio(this, 'Radio Soft')" class="station-card">
+            <span class="icon">☁️</span>
+            <span class="station-name">Radio Soft</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac" onclick="return playRadio(this, 'The Voice')" class="station-card">
+            <span class="icon">🎤</span>
+            <span class="station-name">The Voice</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac" onclick="return playRadio(this, 'PopFM')" class="station-card">
+            <span class="icon">🎸</span>
+            <span class="station-name">PopFM</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac" onclick="return playRadio(this, 'Mix 7')" class="station-card">
+            <span class="icon">🕺</span>
+            <span class="station-name">Mix 7</span>
+        </a>
     </div>
 
     <div class="section-title">DR Stationer</div>
     <div class="grid">
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8" onclick="return startRadio(event, this.href, 'DR P1')" class="btn dr"><span>DR P1</span> 📰</a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8" onclick="return startRadio(event, this.href, 'DR P2')" class="btn dr"><span>DR P2</span> 🎻</a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8" onclick="return startRadio(event, this.href, 'DR P3')" class="btn dr"><span>DR P3</span> ⚡</a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="return startRadio(event, this.href, 'DR P4')" class="btn dr"><span>DR P4</span> 📍</a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8" onclick="return startRadio(event, this.href, 'DR P5')" class="btn dr"><span>DR P5</span> ☕</a>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P1')" class="station-card">
+            <span class="icon">📰</span>
+            <span class="station-name">DR P1</span>
+        </a>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P2')" class="station-card">
+            <span class="icon">🎻</span>
+            <span class="station-name">DR P2</span>
+        </a>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P3')" class="station-card">
+            <span class="icon">⚡</span>
+            <span class="station-name">DR P3</span>
+        </a>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="return playRadio(this, 'DR P4')" class="station-card">
+            <span class="icon">📍</span>
+            <span class="station-name">DR P4</span>
+        </a>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P5')" class="station-card">
+            <span class="icon">☕</span>
+            <span class="station-name">DR P5</span>
+        </a>
     </div>
 
     <div class="section-title">Retro & Hits</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac" onclick="return startRadio(event, this.href, 'Radio Vinyl')" class="btn classic-style"><span>Radio Vinyl</span> 📻</a>
-        <a href="http://stream.vinylhits.dk/vinylmp3" onclick="return startRadio(event, this.href, 'VinylHits')" class="btn classic-style"><span>VinylHits</span> 💿</a>
-        <a href="https://streammp3.retro-radio.dk/retro-mp3" onclick="return startRadio(event, this.href, 'Retro Radio')" class="btn retro-style"><span>Retro Radio</span> 📼</a>
+        <a href="https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac" onclick="return playRadio(this, 'Radio Vinyl')" class="station-card">
+            <span class="icon">📻</span>
+            <span class="station-name">Radio Vinyl</span>
+        </a>
+        <a href="http://stream.vinylhits.dk/vinylmp3" onclick="return playRadio(this, 'VinylHits')" class="station-card">
+            <span class="icon">💿</span>
+            <span class="station-name">VinylHits</span>
+        </a>
+        <a href="https://streammp3.retro-radio.dk/retro-mp3" onclick="return playRadio(this, 'Retro Radio')" class="station-card">
+            <span class="icon">📼</span>
+            <span class="station-name">Retro Radio</span>
+        </a>
     </div>
 
     <div class="section-title">Mix & Special</div>
     <div class="grid">
-        <a href="http://stream1.partyfm.dk/Party128" onclick="return startRadio(event, this.href, 'PartyFM')" class="btn popfm"><span>PartyFM</span> 🥳</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac" onclick="return startRadio(event, this.href, 'Weekend Mix')" class="btn mix-style"><span>Weekend Mix</span> 🍹</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac" onclick="return startRadio(event, this.href, 'The Voice In The Mix')" class="btn mix-style"><span>Voice In The Mix</span> 🔥</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac" onclick="return startRadio(event, this.href, 'The Voice Throwback')" class="btn the-voice"><span>Voice Throwback</span> ⏪</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac" onclick="return startRadio(event, this.href, 'Nova 100% Dansk')" class="btn nova"><span>Nova 100% Dansk</span> 🇩🇰</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac" onclick="return startRadio(event, this.href, 'Top 100')" class="btn gold-style"><span>Top 100</span> 🏆</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP09_premium_96.aac" onclick="return startRadio(event, this.href, 'Soft Modern')" class="btn soft"><span>Soft Modern</span> 🌿</a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP08_premium_96.aac" onclick="return startRadio(event, this.href, 'Soft Classic')" class="btn classic-style"><span>Soft Classic</span> 🎻</a>
+        <a href="http://stream1.partyfm.dk/Party128" onclick="return playRadio(this, 'PartyFM')" class="station-card">
+            <span class="icon">🥳</span>
+            <span class="station-name">PartyFM</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac" onclick="return playRadio(this, 'Nova 100% Dansk')" class="station-card">
+            <span class="icon">🇩🇰</span>
+            <span class="station-name">Nova Dansk</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac" onclick="return playRadio(this, 'Top 100')" class="station-card">
+            <span class="icon">🏆</span>
+            <span class="station-name">Top 100</span>
+        </a>
     </div>
 
     <div class="footer-player">
-        <div id="current-label">Vælg en station</div>
-        <video id="player" controls playsinline></video>
+        <div class="player-info">
+            <div class="now-playing-label">Spiller nu</div>
+            <div id="current-station-name">Vælg station</div>
+        </div>
+        <div class="controls">
+            <button id="play-pause-btn" onclick="togglePlay()">
+                <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>
+                <svg id="pause-icon" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+        </div>
     </div>
+
+    <video id="player" playsinline></video>
 
     <script>
         const player = document.getElementById('player');
-        const footerLabel = document.getElementById('current-label');
+        const stationLabel = document.getElementById('current-station-name');
+        const playIcon = document.getElementById('play-icon');
+        const pauseIcon = document.getElementById('pause-icon');
 
-        function startRadio(e, url, name) {
-            e.preventDefault();
+        function playRadio(element, name) {
+            const url = element.href;
+            
+            // Fjern 'playing' klasse fra alle
+            document.querySelectorAll('.station-card').forEach(card => card.classList.remove('playing'));
+            // Tilføj til den valgte
+            element.classList.add('playing');
 
-            footerLabel.textContent = "Spiller nu: " + name;
+            stationLabel.textContent = name;
             document.title = "▶ " + name;
 
             player.src = url;
-            
             if (url.includes("m3u8")) {
                 player.type = "application/x-mpegURL";
             } else {
                 player.type = "audio/aac";
             }
-            
-            player.title = name;
-            player.load();
-            player.play().catch(err => console.log("Afspilning kræver interaktion"));
 
+            player.load();
+            player.play();
+            updateIcons(true);
+
+            // Media Session API (til låseskærm)
             if ('mediaSession' in navigator) {
                 navigator.mediaSession.metadata = new MediaMetadata({
                     title: name,
@@ -190,8 +347,32 @@
                 });
             }
 
-            return false;
+            return false; // Forhindrer link i at åbne
         }
+
+        function togglePlay() {
+            if (player.paused) {
+                player.play();
+                updateIcons(true);
+            } else {
+                player.pause();
+                updateIcons(false);
+            }
+        }
+
+        function updateIcons(isPlaying) {
+            if (isPlaying) {
+                playIcon.style.display = "none";
+                pauseIcon.style.display = "block";
+            } else {
+                playIcon.style.display = "block";
+                pauseIcon.style.display = "none";
+            }
+        }
+
+        // Lyt efter player events
+        player.onplay = () => updateIcons(true);
+        player.onpause = () => updateIcons(false);
     </script>
 </body>
 </html>
