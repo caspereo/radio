@@ -237,9 +237,10 @@
     </div>
 </div>
 
-<video id="audio-engine" playsinline x-webkit-airplay="allow"></video>
+<audio id="audio-engine" playsinline></audio>
 
 <script>
+    // OPDATEREDE STREAM LINKS
     const stations = [
         { id: 'nova', name: 'Nova', cat: 'Populære', icon: '✨', url: 'https://live-bauerdk.sharp-stream.com/nova-premium_96.aac', class: 'nova' },
         { id: 'r100', name: 'Radio 100', cat: 'Populære', icon: '💯', url: 'https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac', class: 'r100' },
@@ -254,8 +255,8 @@
         { id: 'p1', name: 'P1', cat: 'DR Stationer', icon: '📰', url: 'https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8', class: 'dr' },
         { id: 'vinyl', name: 'Radio Vinyl', cat: 'Retro', icon: '📻', url: 'https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac', class: 'vinyl' },
         { id: 'vhits', name: 'VinylHits', cat: 'Retro', icon: '💿', url: 'https://stream.vinylhits.dk/vinylmp3', class: 'vinyl' },
-        { id: 'retro', name: 'Retro', cat: 'Retro', icon: '🎙️', url: 'https://stream.retro-radio.dk/retro-mp3', class: 'retro' },
-        { id: 'party', name: 'PartyFM', cat: 'Mix', icon: '🥳', url: 'https://stream.partyfm.dk/party128', class: 'party' },
+        { id: 'retro', name: 'Retro Radio', cat: 'Retro', icon: '🎙️', url: 'https://streammp3.retro-radio.dk/retro-mp3', class: 'retro' },
+        { id: 'party', name: 'PartyFM', cat: 'Mix', icon: '🥳', url: 'https://stream1.partyfm.dk/Party128', class: 'party' },
         { id: 'wmix', name: 'Weekend Mix', cat: 'Mix', icon: '🍹', url: 'https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac', class: 'mix' },
         { id: 'vix', name: 'The Voice Mix', cat: 'Mix', icon: '🎧', url: 'https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac', class: 'voice' },
         { id: 'vtb', name: 'The Voice Throwback', cat: 'Mix', icon: '⏪', url: 'https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac', class: 'voice' },
@@ -273,7 +274,7 @@
     const muteIcon = document.getElementById('mute-icon');
     const viz = document.getElementById('viz');
     
-    let hls = new Hls();
+    let hls = null;
     let favorites = JSON.parse(localStorage.getItem('radioFavs')) || [];
     let currentStationId = null;
     let activeStationName = "Radio Danmark Pro";
@@ -281,12 +282,6 @@
     const savedVol = localStorage.getItem('radioVol') || 1;
     engine.volume = savedVol;
     volSlider.value = savedVol;
-
-    if ('mediaSession' in navigator) {
-        navigator.mediaSession.setActionHandler('play', () => engine.play());
-        navigator.mediaSession.setActionHandler('pause', () => engine.pause());
-        navigator.mediaSession.setActionHandler('stop', () => { engine.pause(); engine.src = ""; });
-    }
 
     function render(filter = '') {
         const list = document.getElementById('station-list');
@@ -336,34 +331,40 @@
     }
 
     function play(url, name, el) {
-        hls.detachMedia();
-        hls.destroy();
-        hls = new Hls();
+        // Stop alt nuværende
+        engine.pause();
+        if (hls) {
+            hls.detachMedia();
+            hls.destroy();
+            hls = null;
+        }
+        engine.src = ""; 
+        engine.load(); // Tvinger browseren til at slippe den gamle forbindelse
 
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing', 'loading'));
-        el.classList.add('loading');
+        if (el) el.classList.add('loading');
         
         nameLabel.firstChild.textContent = name + " ";
         statusLabel.textContent = "Opretter forbindelse...";
-        
-        // Timeglas fjernet herunder:
         document.title = name;
 
         if (url.includes('m3u8')) {
             if (Hls.isSupported()) {
+                hls = new Hls();
                 hls.loadSource(url);
                 hls.attachMedia(engine);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => engine.play());
             } else if (engine.canPlayType('application/vnd.apple.mpegurl')) {
                 engine.src = url;
+                engine.play();
             }
         } else {
             engine.src = url;
+            engine.play().catch(err => {
+                console.error("Play error:", err);
+                statusLabel.textContent = "Kunne ikke afspille stream";
+            });
         }
-
-        engine.play().catch(() => { 
-            statusLabel.textContent = "Klik på Play for at starte"; 
-            el.classList.remove('loading'); 
-        });
 
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
@@ -375,7 +376,7 @@
     }
 
     function togglePlay() { 
-        if (!engine.src && !hls.url) {
+        if (!engine.src && (!hls || !hls.url)) {
             statusLabel.textContent = "Vælg en station først";
             return;
         }
@@ -401,6 +402,7 @@
     engine.onplaying = () => {
         const loadingBtn = document.querySelector('.btn.loading');
         if (loadingBtn) loadingBtn.classList.replace('loading', 'playing');
+        
         statusLabel.textContent = "Spiller nu";
         viz.classList.add('active');
         updateIcon(true);
@@ -413,7 +415,8 @@
         document.title = "Radio Danmark Pro";
     };
 
-    engine.onerror = () => {
+    engine.onerror = (e) => {
+        console.error("Engine error", e);
         statusLabel.textContent = "Stream fejl - prøv igen";
         document.title = "Radio Danmark Pro";
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('loading', 'playing'));
@@ -427,8 +430,6 @@
 
     document.getElementById('searchInput').oninput = (e) => render(e.target.value);
     
-    window.onunload = () => hls.destroy();
-
     render();
 </script>
 
