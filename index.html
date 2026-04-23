@@ -42,16 +42,15 @@
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px; /* Lidt mindre gap giver mere plads til indhold */
+            gap: 10px;
             width: 100%;
         }
 
-        /* OPDATERET: Mere aflange knapper */
         .btn {
             position: relative;
             background: rgba(var(--brand-color), 0.1);
             border: 1px solid rgba(var(--brand-color), 0.2);
-            border-radius: 16px; /* Lidt mindre radius for det aflange look */
+            border-radius: 16px;
             padding: 12px 6px; 
             display: flex;
             flex-direction: column;
@@ -61,42 +60,17 @@
             color: var(--text-dim);
             transition: all 0.3s ease;
             cursor: pointer;
-            overflow: hidden;
-            min-height: 75px; /* Markant lavere højde */
+            min-height: 75px;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Mindre ikoner for at spare vertikal plads */
-        .btn .icon {
-            font-size: 20px;
-            margin-bottom: 4px;
-            opacity: 0.8;
-            z-index: 2;
-        }
-
-        .btn span {
-            font-size: 11px;
-            font-weight: 500;
-            text-align: center;
-            width: 95%;
-            z-index: 2;
-            line-height: 1.2;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            white-space: normal;
-        }
-
-        .btn:hover, .btn.playing {
-            background: rgba(var(--brand-color), 0.2);
-            border-color: rgba(var(--brand-color), 0.6);
-            color: #fff;
-            transform: translateY(-2px);
-        }
+        .btn .icon { font-size: 20px; margin-bottom: 4px; opacity: 0.8; }
+        .btn span { font-size: 11px; font-weight: 500; text-align: center; width: 95%; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
         .btn.playing {
             background: rgba(var(--brand-color), 0.3);
+            border-color: rgba(var(--brand-color), 0.6);
+            color: #fff;
             box-shadow: 0 8px 20px rgba(var(--brand-color), 0.2);
         }
 
@@ -104,7 +78,6 @@
         .nova { --brand-color: 46, 204, 113; }
         .r100 { --brand-color: 52, 152, 219; }
         .soft { --brand-color: 41, 128, 185; }
-        .soft-l { --brand-color: 135, 206, 250; }
         .voice { --brand-color: 230, 230, 230; }
         .pop { --brand-color: 155, 89, 182; }
         .mix { --brand-color: 233, 30, 99; }
@@ -130,13 +103,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
             z-index: 1000;
         }
 
         .info-stack { display: flex; flex-direction: column; }
-        #current-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-weight: 700; }
-        #current-name { font-size: 15px; font-weight: 700; margin-top: 1px; }
+        #current-label { font-size: 9px; text-transform: uppercase; color: var(--text-dim); font-weight: 700; }
+        #current-name { font-size: 15px; font-weight: 700; }
 
         .play-btn {
             width: 46px;
@@ -147,11 +119,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
         }
         .play-btn svg { fill: #000; width: 20px; height: 20px; }
 
-        video { display: none; }
+        /* SKJUL VIDEOEN MEN LAD DEN VÆRE I DOM'en */
+        #audio-engine { display: none; }
     </style>
 </head>
 <body>
@@ -175,16 +147,6 @@
         <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8', 'P4', this)" class="btn dr"><span class="icon">📍</span><span>P4</span></div>
         <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8', 'P5', this)" class="btn dr"><span class="icon">☕</span><span>P5</span></div>
     </div>
-
-    <div class="section-title">Retro & Mix</div>
-    <div class="grid">
-        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac', 'Radio Vinyl', this)" class="btn vinyl"><span class="icon">📻</span><span>Radio Vinyl</span></div>
-        <div onclick="play('http://stream.vinylhits.dk/vinylmp3', 'VinylHits', this)" class="btn vinyl"><span class="icon">💿</span><span>VinylHits</span></div>
-        <div onclick="play('https://streammp3.retro-radio.dk/retro-mp3', 'Retro', this)" class="btn retro"><span class="icon">🎙️</span><span>Radio Retro</span></div>
-        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac', 'Weekend Mix', this)" class="btn mix"><span class="icon">🍹</span><span>Weekend Mix</span></div>
-        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac', 'Nova 100% Dansk', this)" class="btn nova"><span class="icon">🇩🇰</span><span>100% Dansk</span></div>
-        <div onclick="play('http://stream1.partyfm.dk/Party128', 'PartyFM', this)" class="btn party"><span class="icon">🥳</span><span>PartyFM</span></div>
-    </div>
 </div>
 
 <div class="footer-player">
@@ -197,7 +159,7 @@
     </button>
 </div>
 
-<video id="audio-engine"></video>
+<video id="audio-engine" playsinline x-webkit-airplay="allow"></video>
 
 <script>
     const engine = document.getElementById('audio-engine');
@@ -213,17 +175,27 @@
         statusLabel.textContent = "Spiller nu";
         document.title = "▶ " + name;
         
+        // VIGTIGT: Vi nulstiller SRC helt hver gang for at tvinge WVC til at opdage streamen
+        engine.pause();
+        engine.removeAttribute('src');
+        engine.load();
+        
         engine.src = url;
         engine.load();
-        engine.play().catch(e => console.log("Klik kræves"));
+        engine.play().catch(e => console.log("Klik påkrævet"));
+        
         updateIcon(true);
 
+        // MediaSession sikrer at Apple TV viser metadata selvom vi bruger et video-tag
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: name,
-                artist: 'Radio Danmark',
-                album: 'Live'
+                artist: 'Radio Danmark Pro',
+                album: 'Direkte',
+                artwork: [{ src: 'https://cdn-icons-png.flaticon.com/512/304/304164.png', sizes: '512x512', type: 'image/png' }]
             });
+            navigator.mediaSession.setActionHandler('play', () => engine.play());
+            navigator.mediaSession.setActionHandler('pause', () => engine.pause());
         }
     }
 
