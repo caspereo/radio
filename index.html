@@ -40,7 +40,6 @@
             padding-left: 10px;
         }
 
-        /* GRID: Maks 3 knapper */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -48,7 +47,6 @@
             width: 100%;
         }
 
-        /* STATION BUTTONS */
         .btn {
             position: relative;
             background: rgba(var(--brand-color), 0.1);
@@ -63,7 +61,7 @@
             color: var(--text-dim);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
-            overflow: hidden; /* Vigtigt for glas-reflektion */
+            overflow: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -86,7 +84,6 @@
             z-index: 2;
         }
 
-        /* HOVER EFFEKT */
         .btn:hover {
             transform: translateY(-5px) scale(1.04);
             background: rgba(var(--brand-color), 0.15);
@@ -94,7 +91,6 @@
             color: #fff;
         }
 
-        /* GLAS REFLEKTION (Shimmer) */
         .btn::after {
             content: "";
             position: absolute;
@@ -116,7 +112,6 @@
             left: 150%;
         }
 
-        /* ACTIVE / PLAYING STATE */
         .btn.playing {
             background: rgba(var(--brand-color), 0.3);
             border-color: rgba(var(--brand-color), 0.9);
@@ -193,7 +188,8 @@
         .play-btn:active { transform: scale(0.9); }
         .play-btn svg { fill: #000; width: 24px; height: 24px; }
 
-        video { display: none; }
+        /* SKJULT AUDIO ENGINE */
+        #audio-engine { display: none; }
     </style>
 </head>
 <body>
@@ -248,7 +244,7 @@
     </button>
 </div>
 
-<video id="audio-engine"></video>
+<audio id="audio-engine" playsinline></audio>
 
 <script>
     const engine = document.getElementById('audio-engine');
@@ -276,7 +272,7 @@
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: name,
                 artist: 'Radio Danmark',
-                album: 'Live'
+                album: 'Live Stream'
             });
         }
     }
