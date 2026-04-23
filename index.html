@@ -169,7 +169,6 @@
 
         .volume-container { display: flex; align-items: center; gap: 12px; }
         .volume-container svg { width: 18px; fill: white; opacity: 0.6; cursor: pointer; transition: 0.2s; }
-        .volume-container svg:hover { opacity: 1; }
         .volume-slider {
             flex: 1;
             -webkit-appearance: none;
@@ -185,7 +184,6 @@
             background: white;
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
         .play-btn {
@@ -199,10 +197,7 @@
             justify-content: center;
             cursor: pointer;
             flex-shrink: 0;
-            transition: transform 0.2s;
         }
-        .play-btn:active { transform: scale(0.9); }
-        .play-btn svg { fill: black; width: 24px; }
 
         #audio-engine { display: none; }
     </style>
@@ -227,20 +222,19 @@
                 </div>
             </div>
         </div>
-        <button class="play-btn" onclick="togglePlay()" aria-label="Afspil eller pause">
+        <button class="play-btn" onclick="togglePlay()">
             <svg id="ctrl-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
         </button>
     </div>
     <div class="volume-container">
         <svg id="mute-icon" onclick="toggleMute()" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg>
-        <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)" aria-label="Lydstyrke">
+        <input type="range" class="volume-slider" id="vol-slider" min="0" max="1" step="0.01" value="1" oninput="setVolume(this.value)">
     </div>
 </div>
 
-<audio id="audio-engine" playsinline></audio>
+<video id="audio-engine" playsinline x-webkit-airplay="allow" controlslist="nodownload"></video>
 
 <script>
-    // OPDATEREDE STREAM LINKS
     const stations = [
         { id: 'nova', name: 'Nova', cat: 'Populære', icon: '✨', url: 'https://live-bauerdk.sharp-stream.com/nova-premium_96.aac', class: 'nova' },
         { id: 'r100', name: 'Radio 100', cat: 'Populære', icon: '💯', url: 'https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac', class: 'r100' },
@@ -331,39 +325,34 @@
     }
 
     function play(url, name, el) {
-        // Stop alt nuværende
         engine.pause();
         if (hls) {
-            hls.detachMedia();
             hls.destroy();
             hls = null;
         }
-        engine.src = ""; 
-        engine.load(); // Tvinger browseren til at slippe den gamle forbindelse
 
         document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing', 'loading'));
         if (el) el.classList.add('loading');
         
         nameLabel.firstChild.textContent = name + " ";
         statusLabel.textContent = "Opretter forbindelse...";
-        document.title = name;
 
-        if (url.includes('m3u8')) {
-            if (Hls.isSupported()) {
-                hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(engine);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => engine.play());
-            } else if (engine.canPlayType('application/vnd.apple.mpegurl')) {
-                engine.src = url;
-                engine.play();
-            }
+        // iOS Optimization: Brug altid native src hvis muligt (vigtigt for Web Video Cast)
+        const isM3U8 = url.includes('m3u8');
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+        if (isM3U8 && !isSafari && Hls.isSupported()) {
+            // Desktop Chrome/Firefox fallback
+            hls = new Hls();
+            hls.loadSource(url);
+            hls.attachMedia(engine);
+            hls.on(Hls.Events.MANIFEST_PARSED, () => engine.play());
         } else {
+            // iOS og direkte audio streams
+            // Sæt src direkte så Cast-appen kan se URL'en
             engine.src = url;
-            engine.play().catch(err => {
-                console.error("Play error:", err);
-                statusLabel.textContent = "Kunne ikke afspille stream";
-            });
+            engine.load();
+            engine.play().catch(e => console.log("Play blocked/error:", e));
         }
 
         if ('mediaSession' in navigator) {
@@ -376,60 +365,37 @@
     }
 
     function togglePlay() { 
-        if (!engine.src && (!hls || !hls.url)) {
-            statusLabel.textContent = "Vælg en station først";
-            return;
-        }
+        if (!engine.src && !hls) return;
         engine.paused ? engine.play() : engine.pause(); 
     }
 
     function setVolume(val) { 
         engine.volume = val; 
         localStorage.setItem('radioVol', val);
-        updateMuteIcon(val == 0);
+        muteIcon.style.fill = val == 0 ? '#ff4757' : 'white';
     }
 
     function toggleMute() {
         engine.muted = !engine.muted;
-        updateMuteIcon(engine.muted);
-    }
-
-    function updateMuteIcon(isMuted) {
-        muteIcon.style.fill = isMuted ? '#ff4757' : 'white';
-        muteIcon.style.opacity = isMuted ? '1' : '0.6';
+        muteIcon.style.fill = engine.muted ? '#ff4757' : 'white';
     }
 
     engine.onplaying = () => {
-        const loadingBtn = document.querySelector('.btn.loading');
-        if (loadingBtn) loadingBtn.classList.replace('loading', 'playing');
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('loading'));
+        const activeBtn = document.querySelector(`.btn[onclick*='${currentStationId}']`);
+        if (activeBtn) activeBtn.classList.add('playing');
         
         statusLabel.textContent = "Spiller nu";
         viz.classList.add('active');
-        updateIcon(true);
-        document.title = "▶ " + activeStationName;
+        ctrlIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
     };
 
     engine.onpause = () => {
         viz.classList.remove('active');
-        updateIcon(false);
-        document.title = "Radio Danmark Pro";
+        ctrlIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
     };
-
-    engine.onerror = (e) => {
-        console.error("Engine error", e);
-        statusLabel.textContent = "Stream fejl - prøv igen";
-        document.title = "Radio Danmark Pro";
-        document.querySelectorAll('.btn').forEach(b => b.classList.remove('loading', 'playing'));
-    };
-
-    function updateIcon(playing) {
-        ctrlIcon.innerHTML = playing 
-            ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' 
-            : '<path d="M8 5v14l11-7z"/>';
-    }
 
     document.getElementById('searchInput').oninput = (e) => render(e.target.value);
-    
     render();
 </script>
 
