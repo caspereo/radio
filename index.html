@@ -3,65 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Radio Danmark | Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Radio Danmark Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0a0a0c;
-            --panel: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.08);
-            --text-dim: #888;
-            --accent: #f39c12;
+            --bg: #050505;
+            --panel: rgba(20, 20, 20, 0.7);
+            --text-dim: rgba(255, 255, 255, 0.5);
+            /* Standard farve hvis intet er valgt */
+            --accent: 100, 100, 100; 
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background: var(--bg);
+            background-image: 
+                radial-gradient(circle at 50% -20%, rgba(var(--accent), 0.15), transparent 50%),
+                radial-gradient(circle at 0% 100%, rgba(var(--accent), 0.05), transparent 40%);
             color: white;
             margin: 0;
-            padding: 20px 15px 180px 15px;
+            padding: 20px 15px 200px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            -webkit-tap-highlight-color: transparent;
+            min-height: 100vh;
+            transition: background 1s ease;
         }
 
-        /* Overskrifter */
-        .category-header {
+        .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 600px;
+        }
+
+        .section-title {
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             color: var(--text-dim);
-            margin: 35px 0 15px 5px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            margin: 40px 0 15px 5px;
+            font-weight: 700;
         }
 
-        .category-header::after {
-            content: "";
-            height: 1px;
-            flex-grow: 1;
-            background: rgba(255,255,255,0.05);
-        }
-
-        /* Grid - Max 3 kolonner */
+        /* GRID SYSTEM: Max 3 knapper ved siden af hinanden */
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            max-width: 500px;
         }
 
-        /* Station Knapper */
+        /* STATION BUTTONS */
         .btn {
             position: relative;
-            background: var(--panel);
-            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             border-radius: 18px;
             padding: 20px 10px;
             display: flex;
@@ -69,173 +64,231 @@
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            color: white;
-            transition: all 0.3s ease;
+            color: var(--text-dim);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        .btn span {
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            margin-top: 8px;
+            line-height: 1.2;
         }
 
         .btn .icon {
             font-size: 22px;
-            margin-bottom: 8px;
-            opacity: 0.5;
-            transition: opacity 0.3s;
+            filter: grayscale(1) opacity(0.5);
+            transition: all 0.4s ease;
         }
 
-        .btn span {
-            font-size: 12px;
-            font-weight: 600;
-            text-align: center;
-            opacity: 0.7;
+        /* HOVER & ACTIVE STATES */
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
         }
 
-        /* Hover & Active States */
-        .btn:active {
-            transform: scale(0.92);
+        /* Når stationen SPILLER */
+        .btn.playing {
+            background: rgba(var(--brand-color), 0.15);
+            border-color: rgba(var(--brand-color), 0.5);
+            box-shadow: 0 10px 25px rgba(var(--brand-color), 0.2);
+            color: white;
+            transform: scale(1.05);
         }
 
-        /* Unikke farver (Faded til Standby) */
-        .btn.active {
-            border-color: var(--clr);
-            background: rgba(var(--clr-rgb), 0.15);
-            box-shadow: 0 0 20px rgba(var(--clr-rgb), 0.2);
+        .btn.playing .icon {
+            filter: grayscale(0) opacity(1);
+            transform: scale(1.2);
         }
 
-        .btn.active .icon, .btn.active span {
-            opacity: 1;
-            transform: scale(1.1);
-        }
+        /* UNIKKE FARVER (Faded indtil aktiv) */
+        .nova { --brand-color: 46, 204, 113; }
+        .radio100 { --brand-color: 52, 152, 219; }
+        .soft { --brand-color: 162, 210, 255; }
+        .thevoice { --brand-color: 255, 255, 255; }
+        .popfm { --brand-color: 155, 89, 182; }
+        .mix7 { --brand-color: 233, 30, 99; }
+        .dr { --brand-color: 231, 76, 60; }
+        .vinyl { --brand-color: 243, 156, 18; }
+        .retro { --brand-color: 211, 84, 0; }
+        .party { --brand-color: 255, 235, 59; }
 
-        .btn.active::before {
-            content: "";
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 6px;
-            height: 6px;
-            background: var(--clr);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--clr);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        /* Footer Player */
-        .footer {
+        /* FOOTER PLAYER */
+        .footer-player {
             position: fixed;
             bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 92%;
+            width: calc(100% - 40px);
             max-width: 450px;
-            background: rgba(20, 20, 22, 0.85);
+            background: rgba(15, 15, 15, 0.9);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 25px;
-            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-            z-index: 100;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            z-index: 1000;
         }
 
-        .info { display: flex; flex-direction: column; }
-        .info .label { font-size: 9px; text-transform: uppercase; color: var(--accent); font-weight: 800; }
-        #current-name { font-size: 15px; font-weight: 600; margin-top: 2px; }
+        .info-stack {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #current-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(var(--brand-color, 243, 156, 18), 1);
+            font-weight: 800;
+        }
+
+        #current-name {
+            font-size: 17px;
+            font-weight: 700;
+        }
 
         .play-btn {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             background: white;
             border: none;
-            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            transition: transform 0.2s ease;
         }
 
+        .play-btn:active { transform: scale(0.9); }
+        .play-btn svg { fill: black; width: 24px; height: 24px; }
+
         video { display: none; }
+
+        @media (max-width: 400px) {
+            .btn span { font-size: 11px; }
+            .grid { gap: 8px; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="category-header">Populære</div>
+<div class="container">
+    <div class="section-title">Populære</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/nova-premium_96.aac" onclick="play(this, 'Nova', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
-            <div class="icon">✨</div><span>Nova</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac" onclick="play(this, 'Radio 100', '52, 152, 219')" class="btn" style="--clr: #3498db; --clr-rgb: 52, 152, 219;">
-            <div class="icon">💯</div><span>Radio 100</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/soft-premium_96.aac" onclick="play(this, 'Radio Soft', '174, 214, 241')" class="btn" style="--clr: #aed6f1; --clr-rgb: 174, 214, 241;">
-            <div class="icon">☁️</div><span>Soft</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac" onclick="play(this, 'The Voice', '255, 255, 255')" class="btn" style="--clr: #ffffff; --clr-rgb: 255, 255, 255;">
-            <div class="icon">🎤</div><span>The Voice</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac" onclick="play(this, 'PopFM', '155, 89, 182')" class="btn" style="--clr: #9b59b6; --clr-rgb: 155, 89, 182;">
-            <div class="icon">🎸</div><span>PopFM</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac" onclick="play(this, 'Mix 7', '26, 188, 156')" class="btn" style="--clr: #1abc9c; --clr-rgb: 26, 188, 156;">
-            <div class="icon">🕺</div><span>Mix 7</span>
-        </a>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/nova-premium_96.aac', 'Nova', this)" class="btn nova"><span class="icon">✨</span><span>Nova</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac', 'Radio 100', this)" class="btn radio100"><span class="icon">💯</span><span>Radio 100</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/soft-premium_96.aac', 'Radio Soft', this)" class="btn soft"><span class="icon">☁️</span><span>Soft</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac', 'The Voice', this)" class="btn thevoice"><span class="icon">🎤</span><span>The Voice</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac', 'PopFM', this)" class="btn popfm"><span class="icon">🎸</span><span>PopFM</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac', 'Mix 7', this)" class="btn mix7"><span class="icon">🕺</span><span>Mix 7</span></div>
     </div>
 
-    <div class="category-header">DR Stationer</div>
+    <div class="section-title">DR Stationer</div>
     <div class="grid">
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8" onclick="play(this, 'DR P5', '241, 196, 15')" class="btn" style="--clr: #f1c40f; --clr-rgb: 241, 196, 15;">
-            <div class="icon">☕</div><span>P5</span>
-        </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="play(this, 'DR P4', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
-            <div class="icon">📍</div><span>P4</span>
-        </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8" onclick="play(this, 'DR P3', '46, 204, 113')" class="btn" style="--clr: #2ecc71; --clr-rgb: 46, 204, 113;">
-            <div class="icon">⚡</div><span>P3</span>
-        </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8" onclick="play(this, 'DR P2', '149, 165, 166')" class="btn" style="--clr: #95a5a6; --clr-rgb: 149, 165, 166;">
-            <div class="icon">🎻</div><span>P2</span>
-        </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8" onclick="play(this, 'DR P1', '52, 73, 94')" class="btn" style="--clr: #34495e; --clr-rgb: 52, 73, 94;">
-            <div class="icon">📰</div><span>P1</span>
-        </a>
+        <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8', 'DR P5', this)" class="btn dr"><span class="icon">☕</span><span>P5</span></div>
+        <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8', 'DR P4', this)" class="btn dr"><span class="icon">📍</span><span>P4</span></div>
+        <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8', 'DR P3', this)" class="btn dr"><span class="icon">⚡</span><span>P3</span></div>
+        <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8', 'DR P2', this)" class="btn dr"><span class="icon">🎻</span><span>P2</span></div>
+        <div onclick="play('https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8', 'DR P1', this)" class="btn dr"><span class="icon">📰</span><span>P1</span></div>
     </div>
 
-    <div class="category-header">Retro</div>
+    <div class="section-title">Retro</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac" onclick="play(this, 'Radio Vinyl', '230, 126, 34')" class="btn" style="--clr: #e67e22; --clr-rgb: 230, 126, 34;">
-            <div class="icon">📻</div><span>Vinyl</span>
-        </a>
-        <a href="http://stream.vinylhits.dk/vinylmp3" onclick="play(this, 'VinylHits', '243, 156, 18')" class="btn" style="--clr: #f39c12; --clr-rgb: 243, 156, 18;">
-            <div class="icon">💿</div><span>VinylHits</span>
-        </a>
-        <a href="https://streammp3.retro-radio.dk/retro-mp3" onclick="play(this, 'Retro Radio', '127, 140, 141')" class="btn" style="--clr: #7f8c8d; --clr-rgb: 127, 140, 141;">
-            <div class="icon">📼</div><span>Retro</span>
-        </a>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac', 'Radio Vinyl', this)" class="btn vinyl"><span class="icon">📻</span><span>Vinyl</span></div>
+        <div onclick="play('http://stream.vinylhits.dk/vinylmp3', 'VinylHits', this)" class="btn vinyl"><span class="icon">💿</span><span>Hits</span></div>
+        <div onclick="play('https://streammp3.retro-radio.dk/retro-mp3', 'Retro', this)" class="btn retro"><span class="icon">📼</span><span>Retro</span></div>
     </div>
 
-    <div class="category-header">Mix</div>
+    <div class="section-title">Mix</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac" onclick="play(this, 'Weekend Mix', '142, 68, 173')" class="btn" style="--clr: #8e44ad; --clr-rgb: 142, 68, 173;">
-            <div class="icon">🍹</div><span>Weekend</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac" onclick="play(this, 'Voice In Mix', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
-            <div class="icon">🔥</div><span>In Mix</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac" onclick="play(this, 'Voice Throwback', '236, 240, 241')" class="btn" style="--clr: #ecf0f1; --clr-rgb: 236, 240, 241;">
-            <div class="icon">⏪</div><span>Throwback</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac" onclick="play(this, 'Nova Dansk', '192, 57, 43')" class="btn" style="--clr: #c0392b; --clr-rgb: 192, 57, 43;">
-            <div class="icon">🇩🇰</div><span>100% Dansk</span>
-        </a>
-        <a href="http://stream1.partyfm.dk/Party128" onclick="play(this, 'PartyFM', '255, 0, 128')" class="btn" style="--clr: #ff0080; --clr-rgb: 255, 0, 128;">
-            <div class="icon">🥳</div><span>PartyFM</span>
-        </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac" onclick="play(this, 'Top 100', '241, 196, 15')" class="btn" style="--clr: #f1c40f; --clr-rgb: 241
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac', 'Weekend Mix', this)" class="btn mix7"><span class="icon">🍹</span><span>Weekend</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac', 'Voice In The Mix', this)" class="btn thevoice"><span class="icon">🔥</span><span>In Mix</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac', 'Voice Throwback', this)" class="btn thevoice"><span class="icon">⏪</span><span>Back</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac', 'Nova 100% Dansk', this)" class="btn nova"><span class="icon">🇩🇰</span><span>Dansk</span></div>
+        <div onclick="play('http://stream1.partyfm.dk/Party128', 'PartyFM', this)" class="btn party"><span class="icon">🥳</span><span>Party</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac', 'Top 100', this)" class="btn vinyl"><span class="icon">🏆</span><span>Top 100</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP09_premium_96.aac', 'Soft modern', this)" class="btn soft"><span class="icon">🌿</span><span>Modern</span></div>
+        <div onclick="play('https://live-bauerdk.sharp-stream.com/RP08_premium_96.aac', 'Soft classic', this)" class="btn soft"><span class="icon">🎻</span><span>Classic</span></div>
+    </div>
+</div>
+
+<div class="footer-player">
+    <div class="info-stack">
+        <div id="current-label">Vælg station</div>
+        <div id="current-name">Klar til musik</div>
+    </div>
+    <button class="play-btn" onclick="togglePlay()">
+        <svg id="ctrl-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+</div>
+
+<video id="audio-engine"></video>
+
+<script>
+    const engine = document.getElementById('audio-engine');
+    const ctrlIcon = document.getElementById('ctrl-icon');
+    const nameLabel = document.getElementById('current-name');
+    const statusLabel = document.getElementById('current-label');
+
+    function play(url, name, el) {
+        // UI reset
+        document.querySelectorAll('.btn').forEach(b => b.classList.remove('playing'));
+        el.classList.add('playing');
+        
+        // Opdater farve-tema i baggrunden baseret på knappens brand-color
+        const color = getComputedStyle(el).getPropertyValue('--brand-color');
+        document.documentElement.style.setProperty('--accent', color);
+        statusLabel.style.color = `rgb(${color})`;
+
+        // Engine setup
+        nameLabel.textContent = name;
+        statusLabel.textContent = "Spiller nu";
+        document.title = "▶ " + name;
+        
+        engine.src = url;
+        engine.load();
+        engine.play();
+        updateIcon(true);
+
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: name,
+                artist: 'Radio Danmark',
+                album: 'Live Stream'
+            });
+        }
+    }
+
+    function togglePlay() {
+        if (engine.paused) {
+            engine.play();
+            updateIcon(true);
+        } else {
+            engine.pause();
+            updateIcon(false);
+        }
+    }
+
+    function updateIcon(playing) {
+        ctrlIcon.innerHTML = playing 
+            ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>' 
+            : '<path d="M8 5v14l11-7z"/>';
+    }
+
+    engine.onplay = () => updateIcon(true);
+    engine.onpause = () => updateIcon(false);
+</script>
+
+</body>
+</html>
