@@ -240,7 +240,6 @@
 <video id="audio-engine" playsinline x-webkit-airplay="allow"></video>
 
 <script>
-    // Opdateret stationliste med HTTPS streams
     const stations = [
         { id: 'nova', name: 'Nova', cat: 'Populære', icon: '✨', url: 'https://live-bauerdk.sharp-stream.com/nova-premium_96.aac', class: 'nova' },
         { id: 'r100', name: 'Radio 100', cat: 'Populære', icon: '💯', url: 'https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac', class: 'r100' },
@@ -279,12 +278,10 @@
     let currentStationId = null;
     let activeStationName = "Radio Danmark Pro";
 
-    // Initialiser volumen fra hukommelse
     const savedVol = localStorage.getItem('radioVol') || 1;
     engine.volume = savedVol;
     volSlider.value = savedVol;
 
-    // MediaSession setup (Låseskærm)
     if ('mediaSession' in navigator) {
         navigator.mediaSession.setActionHandler('play', () => engine.play());
         navigator.mediaSession.setActionHandler('pause', () => engine.pause());
@@ -348,7 +345,9 @@
         
         nameLabel.firstChild.textContent = name + " ";
         statusLabel.textContent = "Opretter forbindelse...";
-        document.title = "⌛ " + name;
+        
+        // Timeglas fjernet herunder:
+        document.title = name;
 
         if (url.includes('m3u8')) {
             if (Hls.isSupported()) {
@@ -428,7 +427,6 @@
 
     document.getElementById('searchInput').oninput = (e) => render(e.target.value);
     
-    // Ryd op i HLS ved lukning
     window.onunload = () => hls.destroy();
 
     render();
