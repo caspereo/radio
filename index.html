@@ -4,375 +4,238 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Radio Danmark | Premium</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #08080a;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --bg: #0a0a0c;
+            --panel: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-dim: #888;
             --accent: #f39c12;
-            --text-main: #ffffff;
-            --text-dim: #a0a0a0;
-            --glass: rgba(15, 15, 15, 0.7);
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(243, 156, 18, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.05) 0%, transparent 40%);
-            color: var(--text-main);
+            background: var(--bg);
+            color: white;
             margin: 0;
-            padding: 20px 20px 180px 20px;
+            padding: 20px 15px 180px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
         }
 
         /* Overskrifter */
-        .section-title {
+        .category-header {
             width: 100%;
-            max-width: 1000px;
-            font-size: 11px;
-            color: var(--accent);
-            margin: 40px 0 20px 0;
+            max-width: 500px;
+            font-size: 10px;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dim);
+            margin: 35px 0 15px 5px;
             font-weight: 800;
-            letter-spacing: 3px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
         }
 
-        .section-title::after {
+        .category-header::after {
             content: "";
             height: 1px;
             flex-grow: 1;
-            background: linear-gradient(to right, rgba(243, 156, 18, 0.3), transparent);
+            background: rgba(255,255,255,0.05);
         }
 
-        /* Grid System */
+        /* Grid - Max 3 kolonner */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
             width: 100%;
-            max-width: 1000px;
+            max-width: 500px;
         }
 
-        /* Station Cards */
-        .station-card {
+        /* Station Knapper */
+        .btn {
             position: relative;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px 15px;
-            text-align: center;
-            text-decoration: none;
-            color: white;
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-            overflow: hidden;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            justify-content: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            overflow: hidden;
         }
 
-        .station-card:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.07);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        .btn .icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+            transition: opacity 0.3s;
         }
 
-        .station-card:active {
-            transform: scale(0.95);
-        }
-
-        /* Ikon/Emoji styling */
-        .icon {
-            font-size: 28px;
-            margin-bottom: 5px;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
-        }
-
-        .station-name {
+        .btn span {
+            font-size: 12px;
             font-weight: 600;
-            font-size: 15px;
-            letter-spacing: -0.2px;
+            text-align: center;
+            opacity: 0.7;
         }
 
-        /* Specifikke farve-glows ved hover og active */
-        .station-card.playing {
-            border-color: var(--accent);
-            background: rgba(243, 156, 18, 0.1);
-            box-shadow: 0 0 20px rgba(243, 156, 18, 0.15);
+        /* Hover & Active States */
+        .btn:active {
+            transform: scale(0.92);
         }
 
-        .playing::before {
+        /* Unikke farver (Faded til Standby) */
+        .btn.active {
+            border-color: var(--clr);
+            background: rgba(var(--clr-rgb), 0.15);
+            box-shadow: 0 0 20px rgba(var(--clr-rgb), 0.2);
+        }
+
+        .btn.active .icon, .btn.active span {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .btn.active::before {
             content: "";
             position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 8px;
-            height: 8px;
-            background: var(--accent);
+            top: 8px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background: var(--clr);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent);
+            box-shadow: 0 0 10px var(--clr);
             animation: pulse 1.5s infinite;
         }
 
         @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
         }
 
         /* Footer Player */
-        .footer-player {
+        .footer {
             position: fixed;
-            bottom: 30px;
+            bottom: 25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 500px;
-            background: var(--glass);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 30px;
-            padding: 15px 25px;
+            width: 92%;
+            max-width: 450px;
+            background: rgba(20, 20, 22, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            z-index: 10000;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            z-index: 100;
         }
 
-        .player-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .info { display: flex; flex-direction: column; }
+        .info .label { font-size: 9px; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+        #current-name { font-size: 15px; font-weight: 600; margin-top: 2px; }
 
-        .now-playing-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--accent);
-            font-weight: 800;
-        }
-
-        #current-station-name {
-            font-size: 16px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 200px;
-        }
-
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        #play-pause-btn {
-            background: var(--accent);
-            border: none;
+        .play-btn {
             width: 45px;
             height: 45px;
+            background: white;
+            border: none;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        #play-pause-btn:active { transform: scale(0.9); }
-
-        /* Skjult video tag */
         video { display: none; }
-
-        /* Mobile optimering */
-        @media (max-width: 480px) {
-            .grid { grid-template-columns: 1fr 1fr; }
-            .section-title { margin-top: 30px; }
-            .footer-player { bottom: 20px; width: 85%; }
-        }
     </style>
 </head>
 <body>
 
-    <div class="section-title">Populære</div>
+    <div class="category-header">Populære</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/nova-premium_96.aac" onclick="return playRadio(this, 'Nova')" class="station-card">
-            <span class="icon">✨</span>
-            <span class="station-name">Nova</span>
+        <a href="https://live-bauerdk.sharp-stream.com/nova-premium_96.aac" onclick="play(this, 'Nova', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
+            <div class="icon">✨</div><span>Nova</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac" onclick="return playRadio(this, 'Radio 100')" class="station-card">
-            <span class="icon">💯</span>
-            <span class="station-name">Radio 100</span>
+        <a href="https://live-bauerdk.sharp-stream.com/radio100-premium_96.aac" onclick="play(this, 'Radio 100', '52, 152, 219')" class="btn" style="--clr: #3498db; --clr-rgb: 52, 152, 219;">
+            <div class="icon">💯</div><span>Radio 100</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/soft-premium_96.aac" onclick="return playRadio(this, 'Radio Soft')" class="station-card">
-            <span class="icon">☁️</span>
-            <span class="station-name">Radio Soft</span>
+        <a href="https://live-bauerdk.sharp-stream.com/soft-premium_96.aac" onclick="play(this, 'Radio Soft', '174, 214, 241')" class="btn" style="--clr: #aed6f1; --clr-rgb: 174, 214, 241;">
+            <div class="icon">☁️</div><span>Soft</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac" onclick="return playRadio(this, 'The Voice')" class="station-card">
-            <span class="icon">🎤</span>
-            <span class="station-name">The Voice</span>
+        <a href="https://live-bauerdk.sharp-stream.com/thevoice-premium_96.aac" onclick="play(this, 'The Voice', '255, 255, 255')" class="btn" style="--clr: #ffffff; --clr-rgb: 255, 255, 255;">
+            <div class="icon">🎤</div><span>The Voice</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac" onclick="return playRadio(this, 'PopFM')" class="station-card">
-            <span class="icon">🎸</span>
-            <span class="station-name">PopFM</span>
+        <a href="https://live-bauerdk.sharp-stream.com/popfm-premium_96.aac" onclick="play(this, 'PopFM', '155, 89, 182')" class="btn" style="--clr: #9b59b6; --clr-rgb: 155, 89, 182;">
+            <div class="icon">🎸</div><span>PopFM</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac" onclick="return playRadio(this, 'Mix 7')" class="station-card">
-            <span class="icon">🕺</span>
-            <span class="station-name">Mix 7</span>
+        <a href="https://live-bauerdk.sharp-stream.com/mix7-premium_96.aac" onclick="play(this, 'Mix 7', '26, 188, 156')" class="btn" style="--clr: #1abc9c; --clr-rgb: 26, 188, 156;">
+            <div class="icon">🕺</div><span>Mix 7</span>
         </a>
     </div>
 
-    <div class="section-title">DR Stationer</div>
+    <div class="category-header">DR Stationer</div>
     <div class="grid">
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P1')" class="station-card">
-            <span class="icon">📰</span>
-            <span class="station-name">DR P1</span>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8" onclick="play(this, 'DR P5', '241, 196, 15')" class="btn" style="--clr: #f1c40f; --clr-rgb: 241, 196, 15;">
+            <div class="icon">☕</div><span>P5</span>
         </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P2')" class="station-card">
-            <span class="icon">🎻</span>
-            <span class="station-name">DR P2</span>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="play(this, 'DR P4', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
+            <div class="icon">📍</div><span>P4</span>
         </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P3')" class="station-card">
-            <span class="icon">⚡</span>
-            <span class="station-name">DR P3</span>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p3/playlist-320000.m3u8" onclick="play(this, 'DR P3', '46, 204, 113')" class="btn" style="--clr: #2ecc71; --clr-rgb: 46, 204, 113;">
+            <div class="icon">⚡</div><span>P3</span>
         </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p4sjaelland/masterab.m3u8" onclick="return playRadio(this, 'DR P4')" class="station-card">
-            <span class="icon">📍</span>
-            <span class="station-name">DR P4</span>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p2/playlist-320000.m3u8" onclick="play(this, 'DR P2', '149, 165, 166')" class="btn" style="--clr: #95a5a6; --clr-rgb: 149, 165, 166;">
+            <div class="icon">🎻</div><span>P2</span>
         </a>
-        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p5/playlist-320000.m3u8" onclick="return playRadio(this, 'DR P5')" class="station-card">
-            <span class="icon">☕</span>
-            <span class="station-name">DR P5</span>
+        <a href="https://drliveradio2.akamaized.net/hls/live/2118698/p1/playlist-320000.m3u8" onclick="play(this, 'DR P1', '52, 73, 94')" class="btn" style="--clr: #34495e; --clr-rgb: 52, 73, 94;">
+            <div class="icon">📰</div><span>P1</span>
         </a>
     </div>
 
-    <div class="section-title">Retro & Hits</div>
+    <div class="category-header">Retro</div>
     <div class="grid">
-        <a href="https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac" onclick="return playRadio(this, 'Radio Vinyl')" class="station-card">
-            <span class="icon">📻</span>
-            <span class="station-name">Radio Vinyl</span>
+        <a href="https://live-bauerdk.sharp-stream.com/RP01_premium_96.aac" onclick="play(this, 'Radio Vinyl', '230, 126, 34')" class="btn" style="--clr: #e67e22; --clr-rgb: 230, 126, 34;">
+            <div class="icon">📻</div><span>Vinyl</span>
         </a>
-        <a href="http://stream.vinylhits.dk/vinylmp3" onclick="return playRadio(this, 'VinylHits')" class="station-card">
-            <span class="icon">💿</span>
-            <span class="station-name">VinylHits</span>
+        <a href="http://stream.vinylhits.dk/vinylmp3" onclick="play(this, 'VinylHits', '243, 156, 18')" class="btn" style="--clr: #f39c12; --clr-rgb: 243, 156, 18;">
+            <div class="icon">💿</div><span>VinylHits</span>
         </a>
-        <a href="https://streammp3.retro-radio.dk/retro-mp3" onclick="return playRadio(this, 'Retro Radio')" class="station-card">
-            <span class="icon">📼</span>
-            <span class="station-name">Retro Radio</span>
+        <a href="https://streammp3.retro-radio.dk/retro-mp3" onclick="play(this, 'Retro Radio', '127, 140, 141')" class="btn" style="--clr: #7f8c8d; --clr-rgb: 127, 140, 141;">
+            <div class="icon">📼</div><span>Retro</span>
         </a>
     </div>
 
-    <div class="section-title">Mix & Special</div>
+    <div class="category-header">Mix</div>
     <div class="grid">
-        <a href="http://stream1.partyfm.dk/Party128" onclick="return playRadio(this, 'PartyFM')" class="station-card">
-            <span class="icon">🥳</span>
-            <span class="station-name">PartyFM</span>
+        <a href="https://live-bauerdk.sharp-stream.com/RP27_premium_96.aac" onclick="play(this, 'Weekend Mix', '142, 68, 173')" class="btn" style="--clr: #8e44ad; --clr-rgb: 142, 68, 173;">
+            <div class="icon">🍹</div><span>Weekend</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac" onclick="return playRadio(this, 'Nova 100% Dansk')" class="station-card">
-            <span class="icon">🇩🇰</span>
-            <span class="station-name">Nova Dansk</span>
+        <a href="https://live-bauerdk.sharp-stream.com/RP16_premium_96.aac" onclick="play(this, 'Voice In Mix', '231, 76, 60')" class="btn" style="--clr: #e74c3c; --clr-rgb: 231, 76, 60;">
+            <div class="icon">🔥</div><span>In Mix</span>
         </a>
-        <a href="https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac" onclick="return playRadio(this, 'Top 100')" class="station-card">
-            <span class="icon">🏆</span>
-            <span class="station-name">Top 100</span>
+        <a href="https://live-bauerdk.sharp-stream.com/RP17_premium_96.aac" onclick="play(this, 'Voice Throwback', '236, 240, 241')" class="btn" style="--clr: #ecf0f1; --clr-rgb: 236, 240, 241;">
+            <div class="icon">⏪</div><span>Throwback</span>
         </a>
-    </div>
-
-    <div class="footer-player">
-        <div class="player-info">
-            <div class="now-playing-label">Spiller nu</div>
-            <div id="current-station-name">Vælg station</div>
-        </div>
-        <div class="controls">
-            <button id="play-pause-btn" onclick="togglePlay()">
-                <svg id="play-icon" width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M8 5v14l11-7z"/></svg>
-                <svg id="pause-icon" style="display:none" width="20" height="20" viewBox="0 0 24 24" fill="black"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-            </button>
-        </div>
-    </div>
-
-    <video id="player" playsinline></video>
-
-    <script>
-        const player = document.getElementById('player');
-        const stationLabel = document.getElementById('current-station-name');
-        const playIcon = document.getElementById('play-icon');
-        const pauseIcon = document.getElementById('pause-icon');
-
-        function playRadio(element, name) {
-            const url = element.href;
-            
-            // Fjern 'playing' klasse fra alle
-            document.querySelectorAll('.station-card').forEach(card => card.classList.remove('playing'));
-            // Tilføj til den valgte
-            element.classList.add('playing');
-
-            stationLabel.textContent = name;
-            document.title = "▶ " + name;
-
-            player.src = url;
-            if (url.includes("m3u8")) {
-                player.type = "application/x-mpegURL";
-            } else {
-                player.type = "audio/aac";
-            }
-
-            player.load();
-            player.play();
-            updateIcons(true);
-
-            // Media Session API (til låseskærm)
-            if ('mediaSession' in navigator) {
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: name,
-                    artist: 'Radio Danmark',
-                    album: 'Live'
-                });
-            }
-
-            return false; // Forhindrer link i at åbne
-        }
-
-        function togglePlay() {
-            if (player.paused) {
-                player.play();
-                updateIcons(true);
-            } else {
-                player.pause();
-                updateIcons(false);
-            }
-        }
-
-        function updateIcons(isPlaying) {
-            if (isPlaying) {
-                playIcon.style.display = "none";
-                pauseIcon.style.display = "block";
-            } else {
-                playIcon.style.display = "block";
-                pauseIcon.style.display = "none";
-            }
-        }
-
-        // Lyt efter player events
-        player.onplay = () => updateIcons(true);
-        player.onpause = () => updateIcons(false);
-    </script>
-</body>
-</html>
+        <a href="https://live-bauerdk.sharp-stream.com/RP11_premium_96.aac" onclick="play(this, 'Nova Dansk', '192, 57, 43')" class="btn" style="--clr: #c0392b; --clr-rgb: 192, 57, 43;">
+            <div class="icon">🇩🇰</div><span>100% Dansk</span>
+        </a>
+        <a href="http://stream1.partyfm.dk/Party128" onclick="play(this, 'PartyFM', '255, 0, 128')" class="btn" style="--clr: #ff0080; --clr-rgb: 255, 0, 128;">
+            <div class="icon">🥳</div><span>PartyFM</span>
+        </a>
+        <a href="https://live-bauerdk.sharp-stream.com/RP25_premium_96.aac" onclick="play(this, 'Top 100', '241, 196, 15')" class="btn" style="--clr: #f1c40f; --clr-rgb: 241
