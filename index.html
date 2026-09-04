@@ -8,11 +8,12 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Radio Pro">
-    <link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Logo-de-World-Hits-Radio.png/960px-Logo-de-World-Hits-Radio.png">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="assets/icon.svg">
     
     <link rel="manifest" href="data:application/manifest+json;base64,ewogICJiaW5kZXIiOiAiUmFkaW8gRGFubWFyayBQcm8iLAogICJzaG9ydF9uYW1lIjogIlJhZGlvIFBybyIsCiAgInN0YXJ0X3VybCI6ICIuIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjMDgwODA4IiwKICAidGhlbWVfY29sb3IiOiAiIzA4MDgwOCIKfQ==">
 
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.7.1"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
     
     <style>
@@ -267,6 +268,7 @@
     const volSlider = document.getElementById('vol-slider');
     const muteIcon = document.getElementById('mute-icon');
     const viz = document.getElementById('viz');
+    const appIconUrl = new URL('assets/icon.svg', window.location.href).href;
     
     let hls = null;
     let favorites = JSON.parse(localStorage.getItem('radioFavs')) || [];
@@ -353,7 +355,7 @@
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: name,
                 artist: 'Radio Danmark Pro',
-                artwork: [{ src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Logo-de-World-Hits-Radio.png/960px-Logo-de-World-Hits-Radio.png', sizes: '512x512', type: 'image/png' }]
+                artwork: [{ src: appIconUrl, sizes: '180x180', type: 'image/svg+xml' }]
             });
         }
     }
